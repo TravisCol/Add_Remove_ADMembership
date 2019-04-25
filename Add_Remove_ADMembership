@@ -1,0 +1,35 @@
+#Import CSV file
+param (
+    [Parameter(Mandatory = $true)]
+    [String]$csvFile
+)
+
+$ADMembers = Import-CSV $csvFile
+
+foreach ($Member in $ADMembers)
+{
+
+        $GroupName   = $Member.groupname
+        $Username    = $Member.username
+        $Action      = $Member.action
+
+       
+
+      #Compare Action Column to see what action to take 
+       if($Action -eq 'add'){
+       
+            Add-ADGroupMember `
+            -Identity $GroupName `
+            -Members $Username `
+       }
+        
+        else
+        {
+           
+            Remove-ADGroupMember `
+            -Identity $GroupName `
+            -Members $Username `
+        }
+
+}
+
